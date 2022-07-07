@@ -14,6 +14,7 @@
 #define SPI_CMD_STAUS			0x20
 #define SPI_CMD_REMOTE_SET		0x30
 #define SPI_CMD_lOCATION_GET	0x40
+#define SPI_CMD_CARNUM_GET		0x50
 
 /* ringo event data */
 #define REMOTE_ON				0x00
@@ -47,19 +48,20 @@ typedef struct {
 typedef struct {
     int16_t positionX;
     int16_t positionY;
-    int16_t headingAngle;
+    float headingAngle;
     int16_t pqf;
     float g_fq[4];
     int16_t g_fpi;
     int16_t g_ftheta;
     int16_t g_fpsi;
+    uint8_t chrTemp[30];
 } structLocation;
 
 typedef struct{
   uint8_t head;
   uint8_t tail;
   uint8_t buffer[MAX_BUFFER_SIZE];
-}uart_t;
+} uart_t;
 
 typedef struct
 {
@@ -74,6 +76,12 @@ typedef struct
 	float l_fPosZ;
 	int l_udPosProb;
 } structUWB;
+
+typedef struct
+{
+	uint8_t CarNum;
+} structInit;
+void CarNum_Init(void);
 
 #define UART_BUFFER_SIZE         256
 #define DMA_RX_BUFFER_SIZE       256
