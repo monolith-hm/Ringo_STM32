@@ -17,6 +17,7 @@
 
 #include <string.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #define BUS_BUFFER_SIZE		128
 #define READ_WAIT() \
@@ -45,6 +46,7 @@ extern DMA_HandleTypeDef hdma_spi1_rx;
 extern DMA_HandleTypeDef hdma_spi1_tx;
 extern structLocation location;
 extern structRingoMode ringomode;
+extern structInit init;
 
 uint8_t busbuffer_rx[ BUS_BUFFER_SIZE ];
 uint8_t busbuffer_tx[ BUS_BUFFER_SIZE + 1 ];
@@ -119,6 +121,8 @@ void BusControlLoop( void )
 						busbuffer_tx[6] = (100 >> 8) & 0xFF;
 						busbuffer_tx[7] = 100 & 0xFF;
 						*/
+						//printf("X = %d, Y = %d, Heading = %d \n",location.positionX, location.positionY, location.g_fpsi);
+						//printf("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x \n",busbuffer_tx[0], busbuffer_tx[1], busbuffer_tx[2], busbuffer_tx[3], busbuffer_tx[4], busbuffer_tx[5], busbuffer_tx[6]);
 						prev_size = sizeof(busbuffer_rx);
 						spi_dma_ready();
 
@@ -131,6 +135,17 @@ void BusControlLoop( void )
 						busbuffer_tx[0] = 0x02;
 						busbuffer_tx[1] = SPI_CMD_STAUS;
 						busbuffer_tx[2] = ringomode.g_udStatusData;
+						prev_size = sizeof(busbuffer_rx);
+						spi_dma_ready();
+
+						READ_WAIT();
+
+						break;
+					}
+					else if(cmd == SPI_CMD_CARNUM_GET && l_udDataLength == 0)
+					{
+						busbuffer_tx[0] = 0x01;
+						busbuffer_tx[1] = init.CarNum;
 						prev_size = sizeof(busbuffer_rx);
 						spi_dma_ready();
 
