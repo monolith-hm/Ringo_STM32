@@ -632,6 +632,7 @@ void COMTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
+	  CarNum_Init();
 	  BusControlLoop();
 	  osDelay(1);
   }
